@@ -141,7 +141,7 @@ internal struct BinaryDecoder: Decoder {
         if let wireFormat = WireFormat(rawValue: c0 & 7) {
             fieldWireFormat = wireFormat
         } else {
-            print("Will throw malformedProtobuf 1")
+            print("Will throw malformedProtobuf 1 \(c0) \(c0 & 7)")
             throw BinaryDecodingError.malformedProtobuf
         }
         if (c0 & 0x80) == 0 {
