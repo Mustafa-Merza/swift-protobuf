@@ -897,11 +897,8 @@ internal struct BinaryDecoder: Decoder {
 
     internal mutating func decodeFullMessage<M: Message>(message: inout M) throws {
         assert(unknownData == nil)
-        print("decodeFullMessage")
         try incrementRecursionDepth()
-        print("incrementRecursionDepth")
         try message.decodeMessage(decoder: &self)
-        print("message.decodeMessage")
         decrementRecursionDepth()
         
         guard complete else {
