@@ -141,6 +141,7 @@ internal struct BinaryDecoder: Decoder {
         if let wireFormat = WireFormat(rawValue: c0 & 7) {
             fieldWireFormat = wireFormat
         } else {
+            print("Will throw malformedProtobuf 1")
             throw BinaryDecodingError.malformedProtobuf
         }
         if (c0 & 0x80) == 0 {
@@ -150,6 +151,7 @@ internal struct BinaryDecoder: Decoder {
         } else {
             fieldNumber = Int(c0 & 0x7f) >> 3
             if available < 2 {
+                print("Will throw malformedProtobuf 2")
                 throw BinaryDecodingError.malformedProtobuf
             }
             let c1 = start[1]
@@ -160,6 +162,7 @@ internal struct BinaryDecoder: Decoder {
             } else {
                 fieldNumber |= Int(c1 & 0x7f) &<< 4
                 if available < 3 {
+                    print("Will throw malformedProtobuf 3")
                     throw BinaryDecodingError.malformedProtobuf
                 }
                 let c2 = start[2]
@@ -169,6 +172,7 @@ internal struct BinaryDecoder: Decoder {
                     available &-= 3
                 } else {
                     if available < 4 {
+                        print("Will throw malformedProtobuf 4")
                         throw BinaryDecodingError.malformedProtobuf
                     }
                     let c3 = start[3]
@@ -178,10 +182,12 @@ internal struct BinaryDecoder: Decoder {
                         available &-= 4
                     } else {
                         if available < 5 {
+                            print("Will throw malformedProtobuf 5")
                             throw BinaryDecodingError.malformedProtobuf
                         }
                         let c4 = start[4]
                         if c4 > 15 {
+                            print("Will throw malformedProtobuf 6")
                             throw BinaryDecodingError.malformedProtobuf
                         }
                         fieldNumber |= Int(c4 & 0x7f) &<< 25
@@ -202,11 +208,13 @@ internal struct BinaryDecoder: Decoder {
                 } else {
                     // .endGroup when not in a group or for a different
                     // group is an invalid binary.
+                    print("Will throw malformedProtobuf 7")
                     throw BinaryDecodingError.malformedProtobuf
                 }
             }
             return fieldNumber
         }
+        print("Will throw malformedProtobuf 8")
         throw BinaryDecodingError.malformedProtobuf
     }
 
@@ -964,6 +972,7 @@ internal struct BinaryDecoder: Decoder {
         var subdecoder = BinaryDecoder(forReadingFrom: p, count: count, parent: self)
         while let tag = try subdecoder.getTag() {
             if tag.wireFormat == .endGroup {
+                print("Will throw malformedProtobuf 9")
                 throw BinaryDecodingError.malformedProtobuf
             }
             let fieldNumber = tag.fieldNumber
@@ -1002,6 +1011,7 @@ internal struct BinaryDecoder: Decoder {
         var subdecoder = BinaryDecoder(forReadingFrom: p, count: count, parent: self)
         while let tag = try subdecoder.getTag() {
             if tag.wireFormat == .endGroup {
+                print("Will throw malformedProtobuf 10")
                 throw BinaryDecodingError.malformedProtobuf
             }
             let fieldNumber = tag.fieldNumber
@@ -1045,6 +1055,7 @@ internal struct BinaryDecoder: Decoder {
         var subdecoder = BinaryDecoder(forReadingFrom: p, count: count, parent: self)
         while let tag = try subdecoder.getTag() {
             if tag.wireFormat == .endGroup {
+                print("Will throw malformedProtobuf 11")
                 throw BinaryDecodingError.malformedProtobuf
             }
             let fieldNumber = tag.fieldNumber
@@ -1138,6 +1149,7 @@ internal struct BinaryDecoder: Decoder {
                     break
 
                 case .malformed:
+                    print("Will throw malformedProtobuf 12")
                     throw BinaryDecodingError.malformedProtobuf
                 }
 
@@ -1156,6 +1168,7 @@ internal struct BinaryDecoder: Decoder {
                     messageExtension: ext
                 )
                 if !consumed {
+                    print("Will throw malformedProtobuf 13")
                     throw BinaryDecodingError.malformedProtobuf
                 }
             }
@@ -1325,6 +1338,7 @@ internal struct BinaryDecoder: Decoder {
                         } else {
                             // .endGroup for a something other than the current
                             // group is an invalid binary.
+                            print("Will throw malformedProtobuf 14")
                             throw BinaryDecodingError.malformedProtobuf
                         }
                     } else {
@@ -1386,6 +1400,7 @@ internal struct BinaryDecoder: Decoder {
         var shift = UInt64(7)
         while true {
             if length < 1 || shift > 63 {
+                print("Will throw malformedProtobuf 15")
                 throw BinaryDecodingError.malformedProtobuf
             }
             c = start.load(fromByteOffset: 0, as: UInt8.self)
@@ -1419,12 +1434,14 @@ internal struct BinaryDecoder: Decoder {
         let t = try decodeVarint()
         if t < UInt64(UInt32.max) {
             guard let tag = FieldTag(rawValue: UInt32(truncatingIfNeeded: t)) else {
+                print("Will throw malformedProtobuf 16")
                 throw BinaryDecodingError.malformedProtobuf
             }
             fieldWireFormat = tag.wireFormat
             fieldNumber = tag.fieldNumber
             return tag
         } else {
+            print("Will throw malformedProtobuf 17")
             throw BinaryDecodingError.malformedProtobuf
         }
     }
@@ -1471,6 +1488,7 @@ internal struct BinaryDecoder: Decoder {
         // the limit still applies.
         guard length < 0x7fff_ffff else {
             // Reuse existing error to avoid breaking change of changing thrown error
+            print("Will throw malformedProtobuf 18 because length: \(length)")
             throw BinaryDecodingError.malformedProtobuf
         }
 

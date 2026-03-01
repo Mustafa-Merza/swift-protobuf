@@ -161,7 +161,8 @@ public enum BinaryDelimited {
         }
         guard unsignedLength <= 0x7fff_ffff else {
             // Adding a new case is a breaking change, reuse malformedProtobuf.
-            print("The size is \(unsignedLength)")
+            
+            print("Will throw malformedProtobuf 19 because unsignedLength: \(unsignedLength)")
             throw BinaryDecodingError.malformedProtobuf
         }
         let length = Int(unsignedLength)
@@ -254,6 +255,7 @@ internal func decodeVarint(_ stream: InputStream) throws -> UInt64 {
         }
         shift += 7
         if shift > 63 {
+            print("Will throw malformedProtobuf 20")
             throw BinaryDecodingError.malformedProtobuf
         }
     }
