@@ -98,7 +98,9 @@ extension Message {
         partial: Bool = false,
         options: BinaryDecodingOptions = BinaryDecodingOptions()
     ) throws {
+        print("Init serializedBytes")
         self.init()
+        print("Merging serializedBytes")
         try merge(serializedBytes: bytes, extensions: extensions, partial: partial, options: options)
     }
 
@@ -156,8 +158,11 @@ extension Message {
         partial: Bool = false,
         options: BinaryDecodingOptions = BinaryDecodingOptions()
     ) throws {
+        print("withUnsafeBytes")
         try bytes.withUnsafeBytes { (body: UnsafeRawBufferPointer) in
+            print("_merge")
             try _merge(rawBuffer: body, extensions: extensions, partial: partial, options: options)
+            print("_merged")
         }
     }
 
@@ -205,6 +210,7 @@ extension Message {
         partial: Bool,
         options: BinaryDecodingOptions
     ) throws {
+        print("_merge inner")
         if let baseAddress = body.baseAddress, body.count > 0 {
             var decoder = BinaryDecoder(
                 forReadingFrom: baseAddress,
@@ -212,7 +218,9 @@ extension Message {
                 options: options,
                 extensions: extensions
             )
+            print("decoder")
             try decoder.decodeFullMessage(message: &self)
+            print("decoder decoded")
         }
         if !partial && !isInitialized {
             throw BinaryDecodingError.missingRequiredFields
