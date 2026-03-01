@@ -161,6 +161,7 @@ public enum BinaryDelimited {
         }
         guard unsignedLength <= 0x7fff_ffff else {
             // Adding a new case is a breaking change, reuse malformedProtobuf.
+            print("The size is \(unsignedLength)")
             throw BinaryDecodingError.malformedProtobuf
         }
         let length = Int(unsignedLength)
